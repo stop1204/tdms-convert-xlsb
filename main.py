@@ -130,6 +130,11 @@ for tdms_file in tdms_files:
             ["date", "time_parse"],
             axis=1,
         )
+        # 如果df 存在 columns的column 那么也drop
+        for column in drop_columns:
+            if column in df.columns:
+                df = df.drop(column, axis=1)
+
         df.to_csv(path_, index=False)
         # print wb columns
         will_drop_columns = wb.sheets[0].range("A1").expand("right").value
