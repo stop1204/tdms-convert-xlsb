@@ -98,6 +98,8 @@ for tdms_file in tdms_files:
         # 写入到 当前目录下的csv文件夹中 如果文件夹不存在则创建
         if not os.path.exists(os.path.join(cwd, "csv")):
             os.mkdir(os.path.join(cwd, "csv"))
+        if not os.path.exists(os.path.join(cwd, "xlsb")):
+            os.mkdir(os.path.join(cwd, "xlsb"))
         path_ = os.path.join(cwd, "csv/" + filename + ".csv")
 
         # df.to_csv(path_, index=False)
@@ -145,7 +147,7 @@ for tdms_file in tdms_files:
             if will_drop_columns[i] in drop_columns:
                 wb.sheets[0].range((1, i + 1)).api.EntireColumn.Delete()
                 print("delete column: ", will_drop_columns[i])
-        wb.save(path_.replace(".csv", ".xlsb"))
+        wb.save(path_.replace("csv", "xlsb"))
         wb.close()
     tdms_file.close()
 
