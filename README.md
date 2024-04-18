@@ -14,3 +14,5 @@
         # wb = app.books.open(path_.replace(".csv", ".xlsb"))
 
         
+## CSV files need to be manually converted to time format: 
+Formula: ```=DateTime + TIME/86400```
