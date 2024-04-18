@@ -1,11 +1,12 @@
-# 默认输出 xlsb
+# folder structure
   - root:
   -  ./csv   // output path
   -  ./tdms  // input path
   -  ./xlsb  // output path
   -  main.exe
   -  drop_columns.txt // drop columns name
-## 输出CSV/XLSB
+  
+## Output CSV/XLSB
         # df.to_csv(path_, index=False)
         # wb = xw.Book(path_)
         # wb.set_mock_caller()
