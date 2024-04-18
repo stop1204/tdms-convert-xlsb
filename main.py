@@ -3,7 +3,7 @@ import nptdms as tdms
 import xlwings as xw
 from datetime import datetime, timedelta
 
-import pandas as pd
+# import pandas as pd
 
 # from pathlib import Path  # 导入Path类，用于处理文件路径
 
