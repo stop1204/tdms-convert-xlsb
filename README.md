@@ -3,6 +3,7 @@
   -  ./csv   // output path
   -  ./tdms  // input path
   -  main.exe
+  -  drop_columns.txt // drop columns name
 ## 输出CSV
         # df.to_csv(path_, index=False)
         # wb = xw.Book(path_)

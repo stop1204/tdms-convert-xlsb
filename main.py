@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 
 # from pathlib import Path  # 导入Path类，用于处理文件路径
 
-# pyinstaller --upx-dir "D:\UPX\upx-4.2.3-win64" -F main.py 
+# pyinstaller --upx-dir "D:\UPX\upx-4.2.3-win64" -F main.py
 # --clean
 
 
@@ -63,9 +63,20 @@ for tdms_file in tdms_files:
 
         # remove column /'Network'/'Network'  and /'Errors'/'Untitled'
         try:
-            df = df.drop(["/'Network'/'Network'", "/'Errors'/'Untitled'"], axis=1)
+            # read file to drop columns
+            drop_file_path = os.path.join(cwd, "drop_columns.txt")
+            drop_columns = []
+            with open(drop_file_path, "r") as f:
+                drop_columns = f.read().splitlines()
+            print("drop columns: ", drop_columns)
+            df = df.drop(
+                drop_columns,
+                axis=1,
+            )
+
         except:
             print("no such column")
+        print("Continue...")
         # insert datetime column to the first column
         df.insert(0, "DateTime", df.index)
         df.insert(1, "date", df.index)
@@ -83,7 +94,7 @@ for tdms_file in tdms_files:
         # replace /' and '
         df.columns = df.columns.str.replace("/'", "")
         df.columns = df.columns.str.replace("//", "")
-
+        print("write to csv/xlsb file...")
         # 写入到 当前目录下的csv文件夹中 如果文件夹不存在则创建
         if not os.path.exists(os.path.join(cwd, "csv")):
             os.mkdir(os.path.join(cwd, "csv"))
@@ -109,6 +120,26 @@ for tdms_file in tdms_files:
         wb.sheets[0][
             "A1"
         ].value = "If you need further assistance, please contact Terry [terry.he@neworld.com.hk]"
+        # delete column 'C:D'
+        print("remove old data")
+        # 将 B 的formular 值赋值给 B
+        wb.sheets[0]["B2:B" + str(rows)].api.Copy()
+        wb.sheets[0]["B2:B" + str(rows)].api.PasteSpecial(-4163)
+        wb.sheets[0]["C:D"].api.Delete()
+        df = df.drop(
+            ["date", "time_parse"],
+            axis=1,
+        )
+        df.to_csv(path_, index=False)
+        # print wb columns
+        will_drop_columns = wb.sheets[0].range("A1").expand("right").value
+        print(will_drop_columns)
+        # wb drop column  , 多重防护, 防止没删掉, 用index,  倒叙删除
+
+        for i in range(len(will_drop_columns) - 1, -1, -1):
+            if will_drop_columns[i] in drop_columns:
+                wb.sheets[0].range((1, i + 1)).api.EntireColumn.Delete()
+                print("delete column: ", will_drop_columns[i])
         wb.save(path_.replace(".csv", ".xlsb"))
         wb.close()
     tdms_file.close()
