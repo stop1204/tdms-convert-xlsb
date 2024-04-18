@@ -7,6 +7,10 @@ from datetime import datetime, timedelta
 
 # from pathlib import Path  # 导入Path类，用于处理文件路径
 
+# pyinstaller --upx-dir "D:\UPX\upx-4.2.3-win64" -F main.py 
+# --clean
+
+
 # Get the current working directory
 # cwd = Path.cwd().joinpath("tdms-convert/")
 # 获得当前运行目录
