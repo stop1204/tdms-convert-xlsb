@@ -1,0 +1,10 @@
+build
+dist
+*.zip
+*.exe
+backup
+
+csv/*
+!csv/.gitkeep
+tdms/*
+!tdms/.gitkeep
