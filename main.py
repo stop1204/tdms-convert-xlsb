@@ -36,7 +36,7 @@ def process_tdms_file(tdms_file, app):
         print("Converting " + tdms_file + " to CSV...")
         filename = tdms_file[:-5]
         with tdms.TdmsFile.open(
-            os.path.join(cwd, "tdms", tdms_file), raw_timestamps="True"
+                os.path.join(cwd, "tdms", tdms_file), raw_timestamps="True"
         ) as tdms_file_obj:
             df = tdms_file_obj.as_dataframe()
             if debug:
@@ -82,7 +82,10 @@ def process_tdms_file(tdms_file, app):
                     print(f"Length mismatch: channel_data({len(channel_data)}) != df({len(df)})")
                 df["time_parse"] = [None] * len(df)
             df["date"] = create_time
-            df["DateTime"] = create_time
+            # df["DateTime"] = create_time
+            # drop na df.column data top 10  /'COBRA THERMAL DATA'/'TIME'
+            df = df.dropna(subset=["/'COBRA THERMAL DATA'/'TIME'"])
+            df["DateTime"] = [create_time + timedelta(seconds=float(t)) for t in df["/'COBRA THERMAL DATA'/'TIME'"]]
             df.columns = df.columns.str.replace("COBRA THERMAL DATA", "")
             df.columns = df.columns.str.replace("'", "")
             df.columns = df.columns.str.replace("/'", "")
@@ -128,6 +131,7 @@ def process_tdms_file(tdms_file, app):
 
                         print("delete column: ", will_drop_columns[i])
             wb.save(path_.replace("csv", "xlsb"))
+            print("Converted")
             wb.close()
     except Exception as e:
         print("failed to convert", tdms_file, e)
