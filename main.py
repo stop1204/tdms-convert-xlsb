@@ -86,6 +86,7 @@ def process_tdms_file(tdms_file, app):
             # drop na df.column data top 10  /'COBRA THERMAL DATA'/'TIME'
             df = df.dropna(subset=["/'COBRA THERMAL DATA'/'TIME'"])
             df["DateTime"] = [create_time + timedelta(seconds=float(t)) for t in df["/'COBRA THERMAL DATA'/'TIME'"]]
+            # df["DateTime"] = df["DateTime"].dt.strftime("%Y/%m/%d %H:%M:%S")
             df.columns = df.columns.str.replace("COBRA THERMAL DATA", "")
             df.columns = df.columns.str.replace("'", "")
             df.columns = df.columns.str.replace("/'", "")
@@ -98,6 +99,11 @@ def process_tdms_file(tdms_file, app):
             if not os.path.exists(os.path.join(cwd, "xlsb")):
                 os.mkdir(os.path.join(cwd, "xlsb"))
             path_ = os.path.join(cwd, "csv/" + filename + ".csv")
+
+
+            # because droped time's NA data
+            rows = df.shape[0]
+
             wb = app.books.add()
             wb.sheets[0]["A1"].value = df
             wb.sheets[0]["B2"].value = "=C2+D2"
@@ -109,6 +115,16 @@ def process_tdms_file(tdms_file, app):
             if debug:
 
                 print("remove old data")
+
+
+            # fix datetime + time
+
+            #print the rows count in wb and df
+
+            # Write the DateTime column to the correct Excel range
+            wb.sheets[0]["B2:B" + str( rows + 1 )].value = [[dt] for dt in df["DateTime"].tolist()]
+
+
             wb.sheets[0]["B2:B" + str(rows)].api.Copy()
             wb.sheets[0]["B2:B" + str(rows)].api.PasteSpecial(-4163)
             wb.sheets[0]["C:D"].api.Delete()
